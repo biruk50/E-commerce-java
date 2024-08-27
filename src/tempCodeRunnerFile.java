@@ -1,0 +1,1 @@
+javac -cp "../lib/*" -d bin SellPanel.java DB.java Product.java 
