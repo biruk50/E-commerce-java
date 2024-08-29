@@ -1,5 +1,5 @@
 /*
-javac -cp "../lib/*" -d bin DB.java Product.java | java -cp "../lib/*;bin" DB
+javac -cp "../lib/*" -d bin DB.java Product.java
 */
 import java.sql.*;
 import java.util.ArrayList;
@@ -32,15 +32,17 @@ public class DB {
     }
 
     // User-related operations
-    public boolean addUser(String username, String password) {
-        String sql = "INSERT INTO personalInfo (username, password) VALUES (?, ?)";
-
+    public boolean addUser(String username, String password, String phonenumber, String email) {
+        String sql = "INSERT INTO personalInfo (username, password, phonenumber, email) VALUES (?, ?, ?, ?)";
+    
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-
+    
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, hashPassword(password));
-
+            preparedStatement.setString(3, phonenumber);
+            preparedStatement.setString(4, email);
+ 
             int rowsInserted = preparedStatement.executeUpdate();
             return rowsInserted > 0; 
 
@@ -50,26 +52,29 @@ public class DB {
         }
     }
 
-    public void updateUser(String username, String newPassword) {
-        String sql = "UPDATE personalInfo SET password = ? WHERE username = ?";
-
+    public void updateUser(String username, String newPassword, String newPhonenumber, String newEmail) {
+        String sql = "UPDATE personalInfo SET password = ?, phonenumber = ?, email = ? WHERE username = ?";
+    
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-
+    
             preparedStatement.setString(1, hashPassword(newPassword));
-            preparedStatement.setString(2, username);
-
+            preparedStatement.setString(2, newPhonenumber);
+            preparedStatement.setString(3, newEmail);
+            preparedStatement.setString(4, username);
+    
             int rowsUpdated = preparedStatement.executeUpdate();
             if (rowsUpdated > 0) {
-                System.out.println("User password updated successfully!");
+                System.out.println("User information updated successfully!");
             } else {
                 System.out.println("No user found with the given username.");
             }
-
+    
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+    
 
     public void deleteUser(String username) {
         String sql = "DELETE FROM personalInfo WHERE username = ?";
