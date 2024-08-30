@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 public class RegisterGui extends BaseFrame {
     private DB db;
-
+    
     public RegisterGui(DB db) {
         super("Registration");
         this.db = db;
@@ -86,6 +86,10 @@ public class RegisterGui extends BaseFrame {
             }
 
             String password = new String(passwordField.getPassword());
+            if (password.length() < 8) {
+                JOptionPane.showMessageDialog(null, "Invalid password number. Please enter a 8 or more character password");
+            return; // Exit the method or handle the error appropriately
+            }
             String rePassword = new String(repasswordField.getPassword());
 
             String phonenumber = phoneField.getText().trim(); // Remove leading/trailing spaces

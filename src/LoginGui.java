@@ -73,7 +73,8 @@ public class LoginGui extends BaseFrame {
             if (username.isEmpty() || password.isEmpty()) {
                 JOptionPane.showMessageDialog(LoginGui.this, "Please fill all the form fields", "Error", JOptionPane.ERROR_MESSAGE);
             } else {
-                if (db.authenticateUser(username, password)) {
+                int pid = db.authenticateUser(username, password);
+                if (pid > 0) {  // If authentication is successful and pid is returned
                     JOptionPane.showMessageDialog(LoginGui.this, "Login is successful", "Success", JOptionPane.PLAIN_MESSAGE);
                     // Proceed to the main application after successful login
                     new ECommerceApp(db).setVisible(true);

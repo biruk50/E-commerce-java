@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
+import java.sql.*;
 
 public class SellPanel extends JPanel {
 
@@ -12,9 +13,11 @@ public class SellPanel extends JPanel {
     private JLabel photoLabel1, photoLabel2;
     private ArrayList<String> photoPaths;
     private DB db;
+    private int pid;  // User ID to be passed
 
     public SellPanel(DB db) {
         this.db = db;
+        this.pid = db.getLoggedInUserPid();  // Initialize the pid
         this.photoPaths = new ArrayList<>();
         setLayout(new BorderLayout(10, 10));
 
@@ -23,7 +26,6 @@ public class SellPanel extends JPanel {
         formPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         formPanel.setBackground(new Color(245, 245, 245));  // Light gray background
 
-        // Using createFormField from BaseFrame
         nameField = new JTextField(20);
         formPanel.add(createFormField("Product Name:", nameField));
 
@@ -39,7 +41,6 @@ public class SellPanel extends JPanel {
         JScrollPane descriptionScrollPane = new JScrollPane(descriptionArea);
         formPanel.add(createFormField("Description:", descriptionScrollPane));
 
-        // Photo upload labels with larger size
         photoLabel1 = createPhotoLabel("Upload Photo 1", 200, 150);  // Larger size
         photoLabel2 = createPhotoLabel("Upload Photo 2", 200, 150);  // Larger size
 
@@ -91,7 +92,7 @@ public class SellPanel extends JPanel {
         String description = descriptionArea.getText();
         double price;
         int quantity;
-
+    
         try {
             price = Double.parseDouble(priceField.getText());
             quantity = Integer.parseInt(quantityField.getText());
@@ -99,18 +100,30 @@ public class SellPanel extends JPanel {
             JOptionPane.showMessageDialog(SellPanel.this, "Please enter valid numbers for price and quantity", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-
+    
         if (name.isEmpty() || description.isEmpty() || photoPaths.isEmpty()) {
             JOptionPane.showMessageDialog(SellPanel.this, "Please fill all the fields and upload at least one photo", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-
-        Product product = new Product(name, description, price, quantity, photoPaths);
-        product.saveToDatabase(db);
-
-        JOptionPane.showMessageDialog(SellPanel.this, "Product added successfully!", "Success", JOptionPane.PLAIN_MESSAGE);
-
-        // Clear the form after submission
+    
+        // Get a database connection from the DB object
+        try (Connection connection = db.getConnection()) {
+            // Pass pid and the Connection to the Product constructor
+            Product product = new Product(pid, name, description, price, quantity, photoPaths, connection);
+            product.saveToDatabase(db);
+    
+            JOptionPane.showMessageDialog(SellPanel.this, "Product added successfully!", "Success", JOptionPane.PLAIN_MESSAGE);
+    
+            // Clear the form after submission
+            clearForm();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(SellPanel.this, "Error saving product to database.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    // Helper method to clear the form
+    private void clearForm() {
         nameField.setText("");
         descriptionArea.setText("");
         priceField.setText("");
@@ -121,8 +134,6 @@ public class SellPanel extends JPanel {
         photoLabel2.setText("Upload Photo 2");
         photoPaths.clear();
     }
-
-    // This method allows using the createFormField method from the BaseFrame
     private JPanel createFormField(String label, JComponent field) {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JLabel jLabel = new JLabel(label);

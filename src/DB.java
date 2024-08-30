@@ -11,6 +11,8 @@ public class DB {
     public static final String DB_USERNAME = "root";
     public static final String DB_PASSWORD = "Fearofgod1234";
 
+    private int loggedInUserPid;
+
     public Connection getConnection() throws SQLException {
         DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
         return DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
@@ -96,10 +98,8 @@ public class DB {
         }
     }
 
-    // Authenticate a user
-    public boolean authenticateUser(String username, String password) {
-        String sql = "SELECT * FROM personalInfo WHERE username = ? AND password = ?";
-
+    public int authenticateUser(String username, String password) {
+        String sql = "SELECT pid FROM personalInfo WHERE username = ? AND password = ?";
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
@@ -107,45 +107,55 @@ public class DB {
             preparedStatement.setString(2, hashPassword(password));
 
             ResultSet rs = preparedStatement.executeQuery();
-            return rs.next();  // returns true if a match is found
-
+            if (rs.next()) {
+                loggedInUserPid = rs.getInt("pid");  // Store the logged-in user's pid
+                return loggedInUserPid;
+            } else {
+                return -1;  // Return -1 if authentication fails
+            }
         } catch (SQLException e) {
             e.printStackTrace();
+            return -1;
         }
-
-        return false;
     }
+
+    public int getLoggedInUserPid() {
+        return loggedInUserPid;
+    }
+    
 
     // E-Commerce related operations
 
     // Add a new product to the database
-    public int addProduct(String name, String description, double price, int quantity) {
-        String sql = "INSERT INTO products (name, description, price, quantity) VALUES (?, ?, ?, ?)";
+    public int addProduct(int pid, String name, String description, double price, int quantity) {
+        String sql = "INSERT INTO products (pid, name, description, price, quantity, date_of_entry) VALUES (?, ?, ?, ?, ?, ?)";
         int productId = -1;
-
+    
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
-            preparedStatement.setString(1, name);
-            preparedStatement.setString(2, description);
-            preparedStatement.setDouble(3, price);
-            preparedStatement.setInt(4, quantity);
-
+    
+            preparedStatement.setInt(1, pid);
+            preparedStatement.setString(2, name);
+            preparedStatement.setString(3, description);
+            preparedStatement.setDouble(4, price);
+            preparedStatement.setInt(5, quantity);
+    
+            // Set the current date
+            Date currentDate = new Date(System.currentTimeMillis());
+            preparedStatement.setDate(6, currentDate);
+    
             int rowsInserted = preparedStatement.executeUpdate();
             if (rowsInserted > 0) {
-                System.out.println("Product added successfully!");
-
-                // Get the generated product ID
                 ResultSet rs = preparedStatement.getGeneratedKeys();
                 if (rs.next()) {
                     productId = rs.getInt(1);
                 }
             }
-
+    
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
+    
         return productId;
     }
 
@@ -170,35 +180,61 @@ public class DB {
     }
 
     // Retrieve products from the database based on a search query
-    public ArrayList<Product> searchProducts(String query) {
-        String sql = "SELECT * FROM products WHERE name LIKE ?";
+    public ArrayList<Product> searchProducts(String query, double maxPrice, boolean sortByDate) {
+        String sql = "SELECT p.*, pi.username, pi.email, pi.phonenumber " +
+                     "FROM products p " +
+                     "JOIN personalInfo pi ON p.pid = pi.pid " +
+                     "WHERE (p.name LIKE ? OR p.description LIKE ?) ";
+        if (maxPrice > 0) {
+            sql += " AND p.price <= ?";
+        }
+        if (sortByDate) {
+            sql += " ORDER BY p.date_of_entry DESC";
+        } else {
+            sql += " ORDER BY p.price ASC";
+        }
+    
         ArrayList<Product> products = new ArrayList<>();
-
+    
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-
+    
             preparedStatement.setString(1, "%" + query + "%");
+            preparedStatement.setString(2, "%" + query + "%");
+    
+            if (maxPrice > 0) {
+                preparedStatement.setDouble(3, maxPrice);
+            }
+    
             ResultSet rs = preparedStatement.executeQuery();
-
+    
             while (rs.next()) {
                 int id = rs.getInt("id");
+                int pid = rs.getInt("pid");
                 String name = rs.getString("name");
                 String description = rs.getString("description");
                 double price = rs.getDouble("price");
                 int quantity = rs.getInt("quantity");
-
+    
+                // User info
+                String username = rs.getString("username");
+                String email = rs.getString("email");
+                String phoneNumber = rs.getString("phonenumber");
+    
                 // Get photos for the product
                 ArrayList<String> photoPaths = getProductPhotos(id);
-
-                products.add(new Product(name, description, price, quantity, photoPaths));
+    
+                products.add(new Product(id, pid ,name, description, price, quantity, photoPaths,username,email,phoneNumber));
             }
-
+    
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
+    
         return products;
     }
+    
+    
 
     // Retrieve photos for a product
     public ArrayList<String> getProductPhotos(int productId) {
