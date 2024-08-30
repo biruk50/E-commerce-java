@@ -16,6 +16,7 @@ public class BuyPanel extends JPanel {
     public BuyPanel(DB db) {
         this.db = db;
         setLayout(new BorderLayout());
+        setSize(800, 600);
 
         // Search panel setup
         JPanel searchPanel = new JPanel();
@@ -133,7 +134,7 @@ public class BuyPanel extends JPanel {
         for (String photoPath : product.getPhotoPaths()) {
             if (photoPath != null) {
                 JLabel photoLabel = new JLabel(new ImageIcon(photoPath));
-                photoLabel.setPreferredSize(new Dimension(100, 100));
+                photoLabel.setPreferredSize(new Dimension(700, 700));
                 photoPanel.add(photoLabel);
             }
         }
