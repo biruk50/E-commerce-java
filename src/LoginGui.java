@@ -18,44 +18,51 @@ public class LoginGui extends BaseFrame {
     protected void addGuiComponents() {
         super.setLayout(new BorderLayout());
         JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS)); // Use BoxLayout for vertical stacking
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        mainPanel.setBackground(Color.white);
-        add(mainPanel, BorderLayout.CENTER); // Add mainPanel to the center of the frame
+        mainPanel.setLayout(null);
+        mainPanel.setBackground(new Color(229, 207, 251));
 
-        JLabel titleLabel = new JLabel("Login");
-        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT); // Center align in BoxLayout
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 22));
-        mainPanel.add(titleLabel);
+        //user name
+        JLabel titleJLabel = new JLabel("Login");
+        titleJLabel.setBounds(180, 50, 40, 20);
+        mainPanel.add(titleJLabel);
+        JTextField nameField= new JTextField(20);
+        JLabel nameLabel=new JLabel("User name :");
+        nameLabel.setFont(new Font("Arial",Font.PLAIN,15));
+        // nameField.setFont(new Font("Arial",Font.PLAIN,16));
+        nameField.setBounds(145,130,180,25);
+        nameLabel.setBounds(40,130,120,20);
+        mainPanel.add(nameLabel);
+        mainPanel.add(nameField);
 
-        mainPanel.add(Box.createVerticalStrut(20)); // Add vertical spacing
+        //password
 
-        JTextField nameField = new JTextField(20);
-        JPanel namePanel = createFormField("User name: ", nameField);
-        namePanel.setAlignmentX(Component.CENTER_ALIGNMENT); // Center align in BoxLayout
-        mainPanel.add(namePanel);
+        JPasswordField passwordField= new JPasswordField(20);
+        JLabel PasswordLabel=new JLabel("Password :");
+        PasswordLabel.setFont(new Font("Arial",Font.PLAIN,15));
+        passwordField.setBounds(145,180,180,25);
+        PasswordLabel.setBounds(40,180,120,20);
+        mainPanel.add(PasswordLabel);
+        mainPanel.add(passwordField);
 
-        mainPanel.add(Box.createVerticalStrut(10)); // Add vertical spacing
-
-        JPasswordField passwordField = new JPasswordField(20);
-        JPanel passwordPanel = createFormField("Password:", passwordField);
-        passwordPanel.setAlignmentX(Component.CENTER_ALIGNMENT); // Center align in BoxLayout
-        mainPanel.add(passwordPanel);
-
-        mainPanel.add(Box.createVerticalStrut(20)); // Add vertical spacing
-
-        JButton loginButton = new JButton("Login");
+        //Login Button
+        JButton loginButton= new JButton("Login");
         loginButton.setFocusable(false);
-        loginButton.setPreferredSize(new Dimension(100, 30));
-        loginButton.setAlignmentX(Component.CENTER_ALIGNMENT); // Center align in BoxLayout
+        loginButton.setBackground(Color.BLUE);
+        loginButton.setForeground(Color.WHITE);;
+       // loginButton.setSize(20,20);
+        loginButton.setBounds(130,280,150,20);
         mainPanel.add(loginButton);
 
-        mainPanel.add(Box.createVerticalStrut(20)); // Add vertical spacing
 
+        //link to Signup page
         JLabel registerLabel = new JLabel("<html><a href=\"#\">Don't have an account? Register here</a></html>");
-        registerLabel.setAlignmentX(Component.CENTER_ALIGNMENT); // Center align in BoxLayout
-        registerLabel.setFont(new Font("Arial", Font.BOLD, 14));
+       // registerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        registerLabel.setBounds(115,315,260,45); // Center align in BoxLayout
+        registerLabel.setFont(new Font("Arial", Font.BOLD, 10));
         mainPanel.add(registerLabel);
+        
+
+        super.add(mainPanel);
 
         // Switch to register page when register label is clicked
         registerLabel.addMouseListener(new java.awt.event.MouseAdapter() {
