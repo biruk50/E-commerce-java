@@ -6,6 +6,34 @@
     "configurations": [
         {
             "type": "java",
+            "name": "LoginGui",
+            "request": "launch",
+            "mainClass": "LoginGui",
+            "projectName": "Final Project_28a2e555"
+        },
+        {
+            "type": "java",
+            "name": "ECommerceApp",
+            "request": "launch",
+            "mainClass": "ECommerceApp",
+            "projectName": "Final Project_28a2e555"
+        },
+        {
+            "type": "java",
+            "name": "App",
+            "request": "launch",
+            "mainClass": "App",
+            "projectName": "Final Project_28a2e555"
+        },
+        {
+            "type": "java",
+            "name": "RegisterGui",
+            "request": "launch",
+            "mainClass": "RegisterGui",
+            "projectName": "Final Project_28a2e555"
+        },
+        {
+            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"

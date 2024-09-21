@@ -1,3 +1,4 @@
+
 /*
 javac -cp "../lib/*" -d bin DB.java Product.java
 */
@@ -7,14 +8,14 @@ import java.security.*;
 
 public class DB {
 
-    public static final String DB_URL = "jdbc:mysql://127.0.0.1:3306/ecommerce";
-    public static final String DB_USERNAME = "root";
-    public static final String DB_PASSWORD = "Fearofgod1234";
+    public static final String DB_URL = "jdbc:sqlserver://ROG-zephyrus\\MSSQLSERVER;databaseName=ecommerce;trustServerCertificate=true";
+    public static final String DB_USERNAME = "DBUser";
+    public static final String DB_PASSWORD = "userpass";
 
     private int loggedInUserPid;
 
     public Connection getConnection() throws SQLException {
-        DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
+        DriverManager.registerDriver(new com.microsoft.sqlserver.jdbc.SQLServerDriver());
         return DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
     }
 
@@ -36,17 +37,17 @@ public class DB {
     // User-related operations
     public boolean addUser(String username, String password, String phonenumber, String email) {
         String sql = "INSERT INTO personalInfo (username, password, phonenumber, email) VALUES (?, ?, ?, ?)";
-    
+
         try (Connection connection = getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-    
+                PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, hashPassword(password));
             preparedStatement.setString(3, phonenumber);
             preparedStatement.setString(4, email);
- 
+
             int rowsInserted = preparedStatement.executeUpdate();
-            return rowsInserted > 0; 
+            return rowsInserted > 0;
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -56,33 +57,32 @@ public class DB {
 
     public void updateUser(String username, String newPassword, String newPhonenumber, String newEmail) {
         String sql = "UPDATE personalInfo SET password = ?, phonenumber = ?, email = ? WHERE username = ?";
-    
+
         try (Connection connection = getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-    
+                PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
             preparedStatement.setString(1, hashPassword(newPassword));
             preparedStatement.setString(2, newPhonenumber);
             preparedStatement.setString(3, newEmail);
             preparedStatement.setString(4, username);
-    
+
             int rowsUpdated = preparedStatement.executeUpdate();
             if (rowsUpdated > 0) {
                 System.out.println("User information updated successfully!");
             } else {
                 System.out.println("No user found with the given username.");
             }
-    
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-    
 
     public void deleteUser(String username) {
         String sql = "DELETE FROM personalInfo WHERE username = ?";
 
         try (Connection connection = getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
             preparedStatement.setString(1, username);
 
@@ -101,17 +101,17 @@ public class DB {
     public int authenticateUser(String username, String password) {
         String sql = "SELECT pid FROM personalInfo WHERE username = ? AND password = ?";
         try (Connection connection = getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, hashPassword(password));
 
             ResultSet rs = preparedStatement.executeQuery();
             if (rs.next()) {
-                loggedInUserPid = rs.getInt("pid");  // Store the logged-in user's pid
+                loggedInUserPid = rs.getInt("pid"); // Store the logged-in user's pid
                 return loggedInUserPid;
             } else {
-                return -1;  // Return -1 if authentication fails
+                return -1; // Return -1 if authentication fails
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -122,7 +122,6 @@ public class DB {
     public int getLoggedInUserPid() {
         return loggedInUserPid;
     }
-    
 
     // E-Commerce related operations
 
@@ -130,20 +129,21 @@ public class DB {
     public int addProduct(int pid, String name, String description, double price, int quantity) {
         String sql = "INSERT INTO products (pid, name, description, price, quantity, date_of_entry) VALUES (?, ?, ?, ?, ?, ?)";
         int productId = -1;
-    
+
         try (Connection connection = getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-    
+                PreparedStatement preparedStatement = connection.prepareStatement(sql,
+                        Statement.RETURN_GENERATED_KEYS)) {
+
             preparedStatement.setInt(1, pid);
             preparedStatement.setString(2, name);
             preparedStatement.setString(3, description);
             preparedStatement.setDouble(4, price);
             preparedStatement.setInt(5, quantity);
-    
+
             // Set the current date
             Date currentDate = new Date(System.currentTimeMillis());
             preparedStatement.setDate(6, currentDate);
-    
+
             int rowsInserted = preparedStatement.executeUpdate();
             if (rowsInserted > 0) {
                 ResultSet rs = preparedStatement.getGeneratedKeys();
@@ -151,11 +151,11 @@ public class DB {
                     productId = rs.getInt(1);
                 }
             }
-    
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    
+
         return productId;
     }
 
@@ -164,7 +164,7 @@ public class DB {
         String sql = "INSERT INTO photos (product_id, photo_path) VALUES (?, ?)";
 
         try (Connection connection = getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
             for (String photoPath : photoPaths) {
                 preparedStatement.setInt(1, productId);
@@ -182,9 +182,9 @@ public class DB {
     // Retrieve products from the database based on a search query
     public ArrayList<Product> searchProducts(String query, double maxPrice, boolean sortByDate) {
         String sql = "SELECT p.*, pi.username, pi.email, pi.phonenumber " +
-                     "FROM products p " +
-                     "JOIN personalInfo pi ON p.pid = pi.pid " +
-                     "WHERE (p.name LIKE ? OR p.description LIKE ?) ";
+                "FROM products p " +
+                "JOIN personalInfo pi ON p.pid = pi.pid " +
+                "WHERE (p.name LIKE ? OR p.description LIKE ?) ";
         if (maxPrice > 0) {
             sql += " AND p.price <= ?";
         }
@@ -193,21 +193,21 @@ public class DB {
         } else {
             sql += " ORDER BY p.price ASC";
         }
-    
+
         ArrayList<Product> products = new ArrayList<>();
-    
+
         try (Connection connection = getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-    
+                PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
             preparedStatement.setString(1, "%" + query + "%");
             preparedStatement.setString(2, "%" + query + "%");
-    
+
             if (maxPrice > 0) {
                 preparedStatement.setDouble(3, maxPrice);
             }
-    
+
             ResultSet rs = preparedStatement.executeQuery();
-    
+
             while (rs.next()) {
                 int id = rs.getInt("id");
                 int pid = rs.getInt("pid");
@@ -215,26 +215,25 @@ public class DB {
                 String description = rs.getString("description");
                 double price = rs.getDouble("price");
                 int quantity = rs.getInt("quantity");
-    
+
                 // User info
                 String username = rs.getString("username");
                 String email = rs.getString("email");
                 String phoneNumber = rs.getString("phonenumber");
-    
+
                 // Get photos for the product
                 ArrayList<String> photoPaths = getProductPhotos(id);
-    
-                products.add(new Product(id, pid ,name, description, price, quantity, photoPaths,username,email,phoneNumber));
+
+                products.add(new Product(id, pid, name, description, price, quantity, photoPaths, username, email,
+                        phoneNumber));
             }
-    
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    
+
         return products;
     }
-    
-    
 
     // Retrieve photos for a product
     public ArrayList<String> getProductPhotos(int productId) {
@@ -242,7 +241,7 @@ public class DB {
         ArrayList<String> photoPaths = new ArrayList<>();
 
         try (Connection connection = getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
             preparedStatement.setInt(1, productId);
             ResultSet rs = preparedStatement.executeQuery();
@@ -263,7 +262,7 @@ public class DB {
         String sql = "UPDATE products SET name = ?, description = ?, price = ?, quantity = ? WHERE id = ?";
 
         try (Connection connection = getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
             preparedStatement.setString(1, newName);
             preparedStatement.setString(2, newDescription);
@@ -289,8 +288,8 @@ public class DB {
         String deleteProductSQL = "DELETE FROM products WHERE id = ?";
 
         try (Connection connection = getConnection();
-             PreparedStatement deletePhotosStmt = connection.prepareStatement(deletePhotosSQL);
-             PreparedStatement deleteProductStmt = connection.prepareStatement(deleteProductSQL)) {
+                PreparedStatement deletePhotosStmt = connection.prepareStatement(deletePhotosSQL);
+                PreparedStatement deleteProductStmt = connection.prepareStatement(deleteProductSQL)) {
 
             // First delete photos
             deletePhotosStmt.setInt(1, productId);
@@ -310,4 +309,3 @@ public class DB {
         }
     }
 }
-
