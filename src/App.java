@@ -6,13 +6,13 @@ import java.sql.*;
 
 public class App {
 
-    private static final String DB_URL = "jdbc:mysql://127.0.0.1:3306/student";
-    private static final String DB_USERNAME = "root";
-    private static final String DB_PASSWORD = "Fearofgod1234";
+    private static final String DB_URL = "jdbc:sqlserver://ROG-zephyrus\\MSSQLSERVER;databaseName=test;trustServerCertificate=true";
+    private static final String DB_USERNAME = "DBUser";
+    private static final String DB_PASSWORD = "userpass";
 
     public static void main(String[] args) {
         try {
-            DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
+            DriverManager.registerDriver(new com.microsoft.sqlserver.jdbc.SQLServerDriver());
 
             // Establish the connection
             Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
