@@ -21,7 +21,7 @@ public class LoginGui extends BaseFrame {
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(null);
         mainPanel.setBackground(new Color(229, 207, 251));
-<<<<<<< HEAD
+
 
         // user name
         JLabel titleJLabel = new JLabel("Login");
@@ -60,7 +60,7 @@ public class LoginGui extends BaseFrame {
         JLabel registerLabel = new JLabel("<html><a href=\"#\">Don't have an account? Register here</a></html>");
         // registerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         registerLabel.setBounds(115, 315, 260, 45); // Center align in BoxLayout
-=======
+
 
         //user name
         JLabel titleJLabel = new JLabel("Login");
@@ -99,7 +99,7 @@ public class LoginGui extends BaseFrame {
         JLabel registerLabel = new JLabel("<html><a href=\"#\">Don't have an account? Register here</a></html>");
        // registerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         registerLabel.setBounds(115,315,260,45); // Center align in BoxLayout
->>>>>>> e45f9bbeb64865d1f3c31e98227cad18f92709f3
+
         registerLabel.setFont(new Font("Arial", Font.BOLD, 10));
         mainPanel.add(registerLabel);
         
