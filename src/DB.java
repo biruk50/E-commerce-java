@@ -8,9 +8,9 @@ import java.security.*;
 
 public class DB {
 
-    public static final String DB_URL = "jdbc:sqlserver://ROG-zephyrus\\MSSQLSERVER;databaseName=ecommerce;trustServerCertificate=true";
-    public static final String DB_USERNAME = "DBUser";
-    public static final String DB_PASSWORD = "userpass";
+    public static final String DB_URL = "jdbc:mysql://127.0.0.1:3306/ecommerce";
+    public static final String DB_USERNAME = "root";
+    public static final String DB_PASSWORD = "nati123";
 
     private int loggedInUserPid;
 
@@ -307,5 +307,31 @@ public class DB {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public ArrayList<Product> getProductsByUser() {
+
+        ArrayList<Product> userProducts = new ArrayList<>();
+        try (Connection connection = getConnection();) {
+            String query = "SELECT * FROM products WHERE pid = ?";
+            PreparedStatement stmt = connection.prepareStatement(query);
+            stmt.setInt(1, loggedInUserPid);
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                int pid = rs.getInt("pid");
+                String name = rs.getString("name");
+                String description = rs.getString("description");
+                Double price = rs.getDouble("price");
+                int quantity = rs.getInt("quantity");
+                ArrayList<String> photoPaths = getProductPhotos(id);
+                Product product = new Product(id, pid, name, description, price, quantity, photoPaths, connection);
+                userProducts.add(product);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return userProducts;
     }
 }

@@ -110,7 +110,7 @@ public class BuyPanel extends JPanel {
         resultsPanel.repaint();
     }
     
-    private JPanel createProductPanel(Product product) {
+    public JPanel createProductPanel(Product product) {
         JPanel productPanel = new JPanel(new BorderLayout(20, 15));
         productPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(230, 230, 230), 1),

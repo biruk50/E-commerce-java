@@ -7,12 +7,13 @@ import java.sql.*;
 
 public class SellPanel extends JPanel {
 
-    private JTextField nameField, priceField, quantityField;
-    private JTextArea descriptionArea;
+    protected JTextField nameField, priceField, quantityField;
+    protected JTextArea descriptionArea;
     private JLabel photoLabel1, photoLabel2;
-    private ArrayList<String> photoPaths;
+    protected ArrayList<String> photoPaths;
     private DB db;
     private int pid;
+    protected JButton submitButton;
 
     public SellPanel(DB db) {
         this.db = db;
@@ -59,7 +60,7 @@ public class SellPanel extends JPanel {
         photoPanel.add(photoLabel2);
         formPanel.add(photoPanel);
 
-        JButton submitButton = new JButton("Submit Product");
+        submitButton = new JButton("Submit Product");
         submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         submitButton.setBackground(new Color(70, 130, 180));
         submitButton.setForeground(Color.WHITE);
@@ -107,7 +108,7 @@ public class SellPanel extends JPanel {
         return label;
     }
 
-    private void handleSubmit() {
+    protected void handleSubmit() {
         String name = nameField.getText();
         String description = descriptionArea.getText();
         double price;
@@ -137,7 +138,7 @@ public class SellPanel extends JPanel {
         }
     }
 
-    private void showErrorMessage(String message) {
+    protected void showErrorMessage(String message) {
         JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
@@ -157,6 +158,37 @@ public class SellPanel extends JPanel {
         photoPaths.clear();
     }
 
+    public void setFields(Product product) {
+        // Set the text fields with the product information
+        nameField.setText(product.getName());
+        descriptionArea.setText(product.getDescription());
+        priceField.setText(String.valueOf(product.getPrice()));
+        quantityField.setText(String.valueOf(product.getQuantity()));
+    
+        // Set the photo paths if available
+        photoPaths = product.getPhotoPaths();
+    
+        // Clear the photo labels first
+        photoLabel1.setIcon(null);
+        photoLabel1.setText("Upload Photo 1");
+        photoLabel2.setIcon(null);
+        photoLabel2.setText("Upload Photo 2");
+    
+        // Set photos in the labels if available
+        if (photoPaths.size() > 0) {
+            ImageIcon imageIcon1 = new ImageIcon(photoPaths.get(0));
+            Image image1 = imageIcon1.getImage().getScaledInstance(200, 150, Image.SCALE_SMOOTH);
+            photoLabel1.setIcon(new ImageIcon(image1));
+            photoLabel1.setText(null); // Remove the default text
+        }
+        if (photoPaths.size() > 1) {
+            ImageIcon imageIcon2 = new ImageIcon(photoPaths.get(1));
+            Image image2 = imageIcon2.getImage().getScaledInstance(200, 150, Image.SCALE_SMOOTH);
+            photoLabel2.setIcon(new ImageIcon(image2));
+            photoLabel2.setText(null); // Remove the default text
+        }
+    }
+    
     private JPanel createFormField(String label, JComponent field) {
         JPanel panel = new JPanel(new BorderLayout(10, 5));
         JLabel jLabel = new JLabel(label);

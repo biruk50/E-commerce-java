@@ -1,60 +1,18 @@
-// //javac -cp "../lib/*" -d bin ECommerceApp.java Product.java BuyPanel.java SellPanel.java DB.java BaseFrame.java| java -cp "../lib/*;bin" ECommerceApp
-// import javax.swing.*;
-// import java.awt.*;
 
-// public class ECommerceApp extends BaseFrame {
-
-//     public DB db;
-
-//     public ECommerceApp(DB db) {
-//         super("E_Commerce App");
-//         this.db = db;
-//     }
-
-//     @Override
-//     protected void addGuiComponents() {
-//         super.setResizable(true);
-//         JMenuBar menuBar = new JMenuBar();
-//         JMenu menu = new JMenu("Menu");
-//         JMenuItem sellItem = new JMenuItem("Sell");
-//         JMenuItem buyItem = new JMenuItem("Buy");
-
-//         sellItem.addActionListener(e -> {
-//             setContentPane(new SellPanel(db));
-//             revalidate();  // Ensures that the content pane is properly reloaded
-//             repaint();
-//         });
-
-//         buyItem.addActionListener(e -> {
-//             setContentPane(new BuyPanel(db));
-//             revalidate();  // Ensures that the content pane is properly reloaded
-//             repaint();
-//         });
-
-//         menu.add(sellItem);
-//         menu.add(buyItem);
-//         menuBar.add(menu);
-//         setJMenuBar(menuBar);
-
-//         setContentPane(new JPanel());
-//     }
-
-//     public static void main(String[] args) {
-//         DB db = new DB();
-//         SwingUtilities.invokeLater(() -> new ECommerceApp(db).setVisible(true));
-//     }
-    
-// }
+//javac -cp "../lib/*" -d bin ECommerceApp.java Product.java BuyPanel.java SellPanel.java DB.java BaseFrame.java| java -cp "../lib/*;bin" ECommerceApp
 import javax.swing.*;
 import java.awt.*;
 
 public class ECommerceApp extends BaseFrame {
 
     public DB db;
+    private static String username;
 
-    public ECommerceApp(DB db) {
-        super("E-Commerce App");
+    public ECommerceApp(DB db, String username) {
+        super("E_Commerce App");
         this.db = db;
+        ECommerceApp.username = username;
+        addGuiComponents();
     }
 
     @Override
@@ -64,61 +22,59 @@ public class ECommerceApp extends BaseFrame {
         JMenu menu = new JMenu("Menu");
         JMenuItem sellItem = new JMenuItem("Sell");
         JMenuItem buyItem = new JMenuItem("Buy");
+        JMenuItem viewYourProducts = new JMenuItem("View Your Products");
+        menu.add(viewYourProducts);
+
+        // Welcome Panel in the center
+        JPanel welcomePanel = new JPanel();
+        welcomePanel.setLayout(new BoxLayout(welcomePanel, BoxLayout.Y_AXIS)); // Vertical stacking
+        welcomePanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        welcomePanel.setBackground(new Color(229, 207, 251));
+
+        JLabel welcomeLabel = new JLabel("Welcome " + ECommerceApp.username + "!");
+        welcomeLabel.setBackground(new Color(229, 207, 251));
+        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        welcomeLabel.setAlignmentX(Component.CENTER_ALIGNMENT); // Center align
+        welcomePanel.add(welcomeLabel);
+        this.add(welcomePanel, BorderLayout.CENTER);
+
+        welcomePanel.add(Box.createVerticalStrut(20));
+
+        JLabel infoLabel = new JLabel("Choose to buy or sell a product by clicking the Menu tab.");
+        infoLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        infoLabel.setAlignmentX(Component.CENTER_ALIGNMENT); // Center align
+        welcomePanel.add(infoLabel);
 
         sellItem.addActionListener(e -> {
             setContentPane(new SellPanel(db));
-            revalidate();
+            revalidate(); // Ensures that the content pane is properly reloaded
             repaint();
         });
 
         buyItem.addActionListener(e -> {
             setContentPane(new BuyPanel(db));
-            revalidate();
+            revalidate(); // Ensures that the content pane is properly reloaded
             repaint();
         });
 
+        viewYourProducts.addActionListener(e -> {
+            setContentPane(new UserProductsPanel(db, this));
+            revalidate(); // Ensures that the content pane is properly reloaded
+            repaint();
+        });
         menu.add(sellItem);
         menu.add(buyItem);
         menuBar.add(menu);
         setJMenuBar(menuBar);
 
-        // Create a welcome panel with instructions
-        JPanel welcomePanel = createWelcomePanel();
         setContentPane(welcomePanel);
-    }
-
-    private JPanel createWelcomePanel() {
-        JPanel welcomePanel = new JPanel();
-        welcomePanel.setLayout(new BoxLayout(welcomePanel, BoxLayout.Y_AXIS));
-        welcomePanel.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
-        welcomePanel.setBackground(new Color(240, 240, 240));
-
-        JLabel welcomeLabel = new JLabel("Welcome to the E-Commerce App!");
-        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        welcomeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        JTextArea instructionsArea = new JTextArea(
-            "How to use this app:\n\n" +
-            "1. To buy an item: Click on 'Menu' > 'Buy'\n" +
-            "2. To sell an item: Click on 'Menu' > 'Sell'\n\n" +
-            "You can switch between buying and selling at any time using the menu."
-        );
-        instructionsArea.setFont(new Font("Arial", Font.PLAIN, 16));
-        instructionsArea.setLineWrap(true);
-        instructionsArea.setWrapStyleWord(true);
-        instructionsArea.setEditable(false);
-        instructionsArea.setBackground(new Color(240, 240, 240));
-        instructionsArea.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        welcomePanel.add(welcomeLabel);
-        welcomePanel.add(Box.createVerticalStrut(30));
-        welcomePanel.add(instructionsArea);
-
-        return welcomePanel;
+        welcomePanel.revalidate();
+        welcomePanel.repaint();
     }
 
     public static void main(String[] args) {
         DB db = new DB();
-        SwingUtilities.invokeLater(() -> new ECommerceApp(db).setVisible(true));
+        SwingUtilities.invokeLater(() -> new ECommerceApp(db, ECommerceApp.username).setVisible(true));
     }
+
 }

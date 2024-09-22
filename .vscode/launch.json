@@ -1,56 +1,63 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "java",
-            "name": "LoginGui",
-            "request": "launch",
-            "mainClass": "LoginGui",
-            "projectName": "Final Project_28a2e555"
-        },
-        {
-            "type": "java",
-            "name": "ECommerceApp",
-            "request": "launch",
-            "mainClass": "ECommerceApp",
-            "projectName": "Final Project_28a2e555"
-        },
-        {
-            "type": "java",
-            "name": "App",
-            "request": "launch",
-            "mainClass": "App",
-            "projectName": "Final Project_28a2e555"
-        },
-        {
-            "type": "java",
-            "name": "RegisterGui",
-            "request": "launch",
-            "mainClass": "RegisterGui",
-            "projectName": "Final Project_28a2e555"
-        },
-        {
-            "type": "java",
-            "name": "Current File",
-            "request": "launch",
-            "mainClass": "${file}"
-        },
-        {
-            "type": "java",
-            "name": "App",
-            "request": "launch",
-            "mainClass": "App",
-            "projectName": "PhonebookApp_adf4b30d"
-        },
-        {
-            "type": "java",
-            "name": "App2",
-            "request": "launch",
-            "mainClass": "App2",
-            "projectName": "PhonebookApp_adf4b30d"
-        }
-    ]
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "LoginGui",
+      "request": "launch",
+      "mainClass": "LoginGui",
+      "projectName": "Final Project_c634e6db"
+    },
+    {
+      "type": "java",
+      "name": "LoginGui",
+      "request": "launch",
+      "mainClass": "LoginGui",
+      "projectName": "Final Project_28a2e555"
+    },
+    {
+      "type": "java",
+      "name": "ECommerceApp",
+      "request": "launch",
+      "mainClass": "ECommerceApp",
+      "projectName": "Final Project_28a2e555"
+    },
+    {
+      "type": "java",
+      "name": "App",
+      "request": "launch",
+      "mainClass": "App",
+      "projectName": "Final Project_28a2e555"
+    },
+    {
+      "type": "java",
+      "name": "RegisterGui",
+      "request": "launch",
+      "mainClass": "RegisterGui",
+      "projectName": "Final Project_28a2e555"
+    },
+    {
+      "type": "java",
+      "name": "Current File",
+      "request": "launch",
+      "mainClass": "${file}"
+    },
+    {
+      "type": "java",
+      "name": "App",
+      "request": "launch",
+      "mainClass": "App",
+      "projectName": "PhonebookApp_adf4b30d"
+    },
+    {
+      "type": "java",
+      "name": "App2",
+      "request": "launch",
+      "mainClass": "App2",
+      "projectName": "PhonebookApp_adf4b30d"
+    }
+  ]
 }
