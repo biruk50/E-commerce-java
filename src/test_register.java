@@ -1,15 +1,15 @@
 /*
-javac -cp "../lib/*" -d bin RegisterGui.java Baseframe.java DB.java Product.java LoginGui.java ECommerceApp.java SellPanel.java BuyPanel.java
-java -cp "../lib/*;bin" RegisterGui
+javac -cp "../lib/*" -d bin test_register.java Baseframe.java DB.java Product.java LoginGui.java ECommerceApp.java SellPanel.java BuyPanel.java
+java -cp "../lib/*;bin" test_register
 */
 import javax.swing.*;
 import java.awt.*;
 import java.util.regex.Pattern;
 
-public class RegisterGui extends BaseFrame {
+public class test_register extends BaseFrame {
     private DB db;
     
-    public RegisterGui(DB db) {
+    public test_register(DB db) {
         super("Registration");
         this.db = db;
     }
@@ -23,7 +23,7 @@ public class RegisterGui extends BaseFrame {
         JLabel titleJLabel = new JLabel("Sign Up");
         titleJLabel.setBounds(180, 50, 60, 20);
         mainPanel.add(titleJLabel);
-        mainPanel.setBackground(new Color(225, 255, 238));
+        mainPanel.setBackground(Color.LIGHT_GRAY);
         JTextField nameField= new JTextField(20);
         JLabel nameLabel=new JLabel("User name :");
         nameLabel.setFont(new Font("Arial",Font.PLAIN,15));
@@ -43,7 +43,7 @@ public class RegisterGui extends BaseFrame {
         JLabel phoneLabel=new JLabel("phone number :");
         phoneLabel.setFont(new Font("Arial",Font.PLAIN,15));
         phoneLabel.setBounds(40,180,120,20);
-        JTextField phoneField=new JTextField("+251",20);
+        JTextField phoneField=new JTextField("251",20);
         phoneField.setBounds(165,180,190,25);
         mainPanel.add(phoneLabel);
         mainPanel.add(phoneField);
@@ -123,18 +123,18 @@ public class RegisterGui extends BaseFrame {
             }
 
             if (rePassword.isEmpty()) {
-                JOptionPane.showMessageDialog(RegisterGui.this, "Please fill all the form fields", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(test_register.this, "Please fill all the form fields", "Error", JOptionPane.ERROR_MESSAGE);
             } else if (!password.equals(rePassword)) {
-                JOptionPane.showMessageDialog(RegisterGui.this, "Passwords do not match", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(test_register.this, "Passwords do not match", "Error", JOptionPane.ERROR_MESSAGE);
             } else {
                 // Add the user to the database
                 if (db.addUser(name, password,phonenumber,email)) {
-                    JOptionPane.showMessageDialog(RegisterGui.this, "Sign-up was successful", "Success", JOptionPane.PLAIN_MESSAGE);
+                    JOptionPane.showMessageDialog(test_register.this, "Sign-up was successful", "Success", JOptionPane.PLAIN_MESSAGE);
                     // Switch to login page
                     new LoginGui(db).setVisible(true);
                     dispose();  // Close the registration window
                 } else {
-                    JOptionPane.showMessageDialog(RegisterGui.this, "Registration failed. User may already exist.", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(test_register.this, "Registration failed. User may already exist.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -152,6 +152,6 @@ public class RegisterGui extends BaseFrame {
 
     public static void main(String[] args) {
         DB db = new DB();  // Initialize the database connection
-        SwingUtilities.invokeLater(() -> new RegisterGui(db).setVisible(true));
+        SwingUtilities.invokeLater(() -> new test_register(db).setVisible(true));
     }
 }
