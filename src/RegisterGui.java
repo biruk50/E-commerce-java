@@ -1,5 +1,5 @@
 /*
-javac -cp "../lib/*" -d bin RegisterGui.java Baseframe.java DB.java Product.java LoginGui.java ECommerceApp.java SellPanel.java BuyPanel.java
+javac -cp "../lib/*" -d bin RegisterGui.java Baseframe.java DB.java Product.java LoginGui.java ECommerceApp.java SellPanel.java BuyPanel.java UserProductsPanel.java ModifyPanel.java
 java -cp "../lib/*;bin" RegisterGui
 */
 import javax.swing.*;
@@ -19,7 +19,7 @@ public class RegisterGui extends BaseFrame {
         super.setLayout(new BorderLayout());
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(null);
-//user name
+        //user name
         JLabel titleJLabel = new JLabel("Sign Up");
         titleJLabel.setBounds(180, 50, 60, 20);
         mainPanel.add(titleJLabel);

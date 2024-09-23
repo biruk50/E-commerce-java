@@ -1,4 +1,4 @@
-
+//javac -cp "../lib/*" -d bin SellPanel.java BuyPanel.java DB.java Product.java
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;

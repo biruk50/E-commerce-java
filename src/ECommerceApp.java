@@ -1,5 +1,4 @@
-
-//javac -cp "../lib/*" -d bin ECommerceApp.java Product.java BuyPanel.java SellPanel.java DB.java BaseFrame.java| java -cp "../lib/*;bin" ECommerceApp
+//javac -cp "../lib/*" -d bin ECommerceApp.java Product.java BuyPanel.java SellPanel.java DB.java BaseFrame.java UserProductsPanel.java ModifyPanel.java| java -cp "../lib/*;bin" ECommerceApp
 import javax.swing.*;
 import java.awt.*;
 

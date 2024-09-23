@@ -10,12 +10,12 @@ public class DB {
 
     public static final String DB_URL = "jdbc:mysql://127.0.0.1:3306/ecommerce";
     public static final String DB_USERNAME = "root";
-    public static final String DB_PASSWORD = "nati123";
+    public static final String DB_PASSWORD = "Fearofgod1234";
 
     private int loggedInUserPid;
 
     public Connection getConnection() throws SQLException {
-        DriverManager.registerDriver(new com.microsoft.sqlserver.jdbc.SQLServerDriver());
+        DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
         return DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
     }
 

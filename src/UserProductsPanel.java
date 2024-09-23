@@ -1,3 +1,4 @@
+//javac -cp "../lib/*" -d bin UserProductsPanel.java DB.java Product.java ModifyPanel.java BuyPanel.java
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
